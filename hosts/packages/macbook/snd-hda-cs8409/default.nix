@@ -9,8 +9,9 @@ stdenv.mkDerivation {
   # Upstream: https://github.com/davidjo/snd_hda_macbookpro
 
   src = fetchgit {
-    url = "https://github.com/davidjo/snd_hda_macbookpro.git";
+    url = "https://github.com/egorenar/snd-hda-codec-cs8409.git";
     rev = version;
+    sha256 = "sha256-0UeoERcYpM+ojeZ7dDIE3ruTIoHkkC+s7FcoEVUTR0w=";
   };
 
   hardeningDisable = [ "pic" ];
