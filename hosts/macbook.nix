@@ -74,6 +74,7 @@
     extraModulePackages = [
       (pkgs.callPackage ./packages/macbook/snd-hda-cs8409/default.nix {
         kernel = pkgs.linuxPackages_xanmod;
+        modDirVersion = "6.12.35";
       })
     ];
   };
