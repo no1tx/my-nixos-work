@@ -1,5 +1,5 @@
 { stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_5_15
-, version ? "259cc39e243daef170f145ba87ad134239b5967f" }:
+, version ? "d0d785dc1859b09299bde6d0f1d6786a0d610e7f" }:
 
 stdenv.mkDerivation {
 
