@@ -79,5 +79,8 @@
     "i915.enable_psr=2"
   ];
 
-  hardware.intelgpu.vaapiDriver = "intel-media-driver";
+   hardware.graphics.extraPackages = with pkgs; [
+    intel-media-driver
+    libva-intel-driver
+   ];
 }
