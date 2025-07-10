@@ -7,6 +7,19 @@
   # Видео и звук (nvidia, modesetting, etc)
   services.xserver.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
+  boot.loader = {
+    grub = {
+      enable = true;
+      efiSupport = true;
+      # efiInstallAsRemovable = true;          # Опционально
+      device = "/dev/sda";                     # Диск установки GRUB
+    };
+    efi = {
+      efiSysMountPoint = "/boot/";
+      canTouchEfiVariables = true;
+    };
+  };
+  boot.kernelPackages = pkgs.linuxPackages_xanmod;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
   services.pipewire = {
@@ -50,7 +63,6 @@
     "intel_lpss_pci"
     "applesmc"
   ];
-  boot.kernelParams = [ "intel_iommu=on" ];
 
   # --- d3cold workaround ---
   systemd.services.disable-nvme-d3cold = {

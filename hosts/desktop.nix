@@ -13,6 +13,19 @@
     powerManagement.enable = true;
     # open = true;
   };
+  boot.loader = {
+    grub = {
+      enable = true;
+      efiSupport = true;
+      # efiInstallAsRemovable = true;          # Опционально
+      device = "/dev/sda";                     # Диск установки GRUB
+    };
+    efi = {
+      efiSysMountPoint = "/boot/";
+      canTouchEfiVariables = true;
+    };
+  };
+  boot.kernelPackages = pkgs.linuxPackages_xanmod;
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
