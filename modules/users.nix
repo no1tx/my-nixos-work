@@ -1,4 +1,11 @@
 { config, pkgs, ... }:
+
+let
+
+  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz;
+
+in
+
 {
   users.users.no1_tx = {
     isNormalUser = true;
