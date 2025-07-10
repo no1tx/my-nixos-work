@@ -19,7 +19,6 @@
       canTouchEfiVariables = true;
     };
   };
-  boot.kernelPackages = pkgs.linuxPackages_xanmod;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
   services.pipewire = {
@@ -74,4 +73,12 @@
     serviceConfig.TimeoutSec = 0;
     wantedBy = [ "multi-user.target" "suspend.target" ];
   };
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  boot.kernelParams = [
+    "i915.enable_guc=2"
+    "i915.enable_fbc=1"
+    "i915.enable_psr=2"
+  ];
+
+  hardware.intelgpu.vaapiDriver = "intel-media-driver";
 }

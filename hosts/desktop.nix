@@ -26,7 +26,6 @@
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
-  boot.kernelPackages = pkgs.linuxPackages_xanmod;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
   services.pipewire = {
@@ -56,4 +55,5 @@
       RemainAfterExit = true;
     };
   };
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
