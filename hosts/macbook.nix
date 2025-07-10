@@ -73,7 +73,7 @@
   boot = {
     extraModulePackages = [
       (pkgs.callPackage ./packages/macbook/snd-hda-cs8409/default.nix {
-        kernel = pkgs.linux-xanmod;
+        kernel = pkgs.linuxPackages_xanmod.kernel;
       })
     ];
   };
