@@ -13,8 +13,6 @@
     grub = {
       enable = true;
       efiSupport = true;
-      # efiInstallAsRemovable = true;          # Опционально
-      device = "/dev/sda";                     # Диск установки GRUB
     };
     efi = {
       efiSysMountPoint = "/boot/";
