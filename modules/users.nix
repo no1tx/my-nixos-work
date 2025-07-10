@@ -7,6 +7,12 @@ let
 in
 
 {
+
+  imports =
+    [
+      (import "${home-manager}/nixos")
+    ];
+
   users.users.no1_tx = {
     isNormalUser = true;
     shell = pkgs.zsh;
