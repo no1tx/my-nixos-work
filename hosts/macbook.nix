@@ -13,6 +13,7 @@
     grub = {
       enable = true;
       efiSupport = true;
+      devices = [ "" ];
     };
     efi = {
       efiSysMountPoint = "/boot/";
