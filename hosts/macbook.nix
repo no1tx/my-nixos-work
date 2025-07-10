@@ -73,7 +73,6 @@
     serviceConfig.TimeoutSec = 0;
     wantedBy = [ "multi-user.target" "suspend.target" ];
   };
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot.kernelParams = [
     "i915.enable_guc=2"
     "i915.enable_fbc=1"
