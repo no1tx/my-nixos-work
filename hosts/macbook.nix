@@ -6,6 +6,8 @@
 
   # Видео и звук (nvidia, modesetting, etc)
   services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
   boot.loader = {
     grub = {
