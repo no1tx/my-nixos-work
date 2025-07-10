@@ -9,17 +9,7 @@
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
-  boot.loader = {
-    grub = {
-      enable = true;
-      efiSupport = true;
-      devices = [ "" ];
-    };
-    efi = {
-      efiSysMountPoint = "/boot/";
-      canTouchEfiVariables = true;
-    };
-  };
+  boot.loader.systemd-boot.enable = true;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
   services.pipewire = {
