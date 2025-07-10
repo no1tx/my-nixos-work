@@ -70,6 +70,14 @@
     "i915.enable_psr=2"
   ];
 
+  boot = {
+    extraModulePackages = [
+      (pkgs.callPackage ./packages/snd-hda-cs8409/default.nix {
+        kernel = pkgs.linuxPackages_xanmod;
+      })
+    ];
+  };
+
    hardware.graphics.extraPackages = with pkgs; [
     intel-media-driver
    ];
