@@ -9,9 +9,8 @@ stdenv.mkDerivation {
   # Upstream: https://github.com/davidjo/snd_hda_macbookpro
 
   src = fetchgit {
-    url = "https://github.com/egorenar/snd-hda-codec-cs8409.git";
+    url = "https://github.com/davidjo/snd_hda_macbookpro.git";
     rev = version;
-    sha256 = "sha256-0UeoERcYpM+ojeZ7dDIE3ruTIoHkkC+s7FcoEVUTR0w=";
   };
 
   hardeningDisable = [ "pic" ];
@@ -44,7 +43,7 @@ stdenv.mkDerivation {
     ' \
     > Makefile
 
-    sed --in-place 's|<sound/cs42l42.h>|"${linuxKernel.kernels.linux_6_0.dev}/lib/modules/${linuxKernel.kernels.linux_6_0.modDirVersion}/source/include/sound/cs42l42.h"|'  patch_cs8409.h
+    sed --in-place 's|<sound/cs42l42.h>|"${kernel.dev}/lib/modules/${kernel.modDirVersion}/source/include/sound/cs42l42.h"|'  patch_cs8409.h
     sed --in-place 's|hda_local.h|${kernel.dev}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/hda_local.h|'                                                      patch_cs8409.h
     sed --in-place 's|hda_jack.h|${kernel.dev}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/hda_jack.h|'                                                        patch_cs8409.h
     sed --in-place 's|hda_generic.h|${kernel.dev}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/hda_generic.h|'                                                  patch_cs8409.h
