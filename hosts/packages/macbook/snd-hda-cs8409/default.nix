@@ -30,7 +30,6 @@ in stdenv.mkDerivation {
     # Копируем нужные файлы из ядра
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
-    cp ${kernelSrc}/sound/pci/hda/hda_local.h build/kernel_sources/
 
     cd build
 
@@ -41,6 +40,7 @@ in stdenv.mkDerivation {
     # Копируем патченные файлы
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
+    cp ${kernelSrc}/sound/pci/hda/hda_local.h sound/pci/hda/
 
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
