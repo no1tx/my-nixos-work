@@ -39,7 +39,9 @@ in stdenv.mkDerivation {
     # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
-    patch -p1 < ${moduleSrc}/patch_patch_cirrus_apple.h.diff
+    substituteInPlace build/kernel_sources/patch_cirrus_apple.h \
+    --replace ".force_status_change = 1," ""
+
 
     # Копируем патченные файлы
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_*.h sound/pci/hda/
