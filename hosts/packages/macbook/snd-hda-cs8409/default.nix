@@ -28,8 +28,9 @@ in stdenv.mkDerivation {
     mkdir ${tmpBuildDir}
 
     # Копируем нужные файлы из ядра
-    cp ${kernelSrc}/sound/pci/hda/*.c build/kernel_sources/
-    cp ${kernelSrc}/sound/pci/hda/*.h build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/hda_local.h build/kernel_sources/
 
     cd build
 
