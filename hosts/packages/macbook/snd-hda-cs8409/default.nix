@@ -10,6 +10,7 @@ let
 
   kernelSrc = kernel.src;
   kernelDev = kernel.dev;
+  tmpBuildDir = "/tmp/build_hda";
 
 in stdenv.mkDerivation {
   name = "snd-hda-codec-cs8409-module-${version}-${kernel.modDirVersion}";
@@ -44,13 +45,13 @@ in stdenv.mkDerivation {
 
     # Создаем временную директорию с правами на запись для сборки
     TMP_BUILD_DIR=$(mktemp -d)
-    cp -r sound/pci/hda/* "$TMP_BUILD_DIR"/
-    cd "$TMP_BUILD_DIR"
+    cp -r sound/pci/hda/* "${tmpBuildDir}"/
+    cd "${tmpBuildDir}"
 
     # Патчим Makefile под правильный путь к kernelDev и корректный путь M=
     substituteInPlace Makefile \
       --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
-      --replace "\$(shell pwd)/build/hda" "$TMP_BUILD_DIR"
+      --replace "\$(shell pwd)/build/hda" "${tmpBuildDir}"
 
     substituteInPlace Makefile --replace "depmod -a" ""
 
@@ -58,11 +59,11 @@ in stdenv.mkDerivation {
     make \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
-      M=$TMP_BUILD_DIR \
+      M=${tmpBuildDir} \
   '';
 
   installPhase = ''
-    install -D -m 0644 ${TMP_BUILD_DIR}/patch_cs8409.ko $out/lib/modules/${kernel.modDirVersion}/updates/patch_cs8409.ko
+    install -D -m 0644 ${tmpBuildDir}/patch_cs8409.ko $out/lib/modules/${kernel.modDirVersion}/updates/patch_cs8409.ko
     # Обновляем модульный кеш
     depmod -a ${kernel.modDirVersion}
   '';
