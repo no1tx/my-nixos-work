@@ -59,10 +59,13 @@ in stdenv.mkDerivation {
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
       M=$TMP_BUILD_DIR \
-      install
   '';
 
-  installPhase = "true";
+  installPhase = ''
+    install -D -m 0644 ${TMP_BUILD_DIR}/patch_cs8409.ko $out/lib/modules/${kernel.modDirVersion}/updates/patch_cs8409.ko
+    # Обновляем модульный кеш
+    depmod -a ${kernel.modDirVersion}
+  '';
 
   meta = with lib; {
     description = "Patched snd-hda-codec-cs8409 kernel module for MacBookPro audio";
