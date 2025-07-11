@@ -9,6 +9,7 @@ let
   };
 
   kernelSrc = kernel.src;
+  kernelDev = kernel.dev;
 
 in stdenv.mkDerivation {
   name = "snd-hda-codec-cs8409-module-${version}-${kernel.modDirVersion}";
@@ -42,19 +43,19 @@ in stdenv.mkDerivation {
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
     substituteInPlace sound/pci/hda/Makefile \
-    --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelSrc}/lib/modules/${kernel.modDirVersion}" \
+    --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
     --replace "\$(shell pwd)/build/hda" "."
 
     cd sound/pci/hda
 
     make \
-      KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build \
+      KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
       INSTALL_MOD_PATH=$out
 
     make \
       modules_install \
-      KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build \
+      KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
       INSTALL_MOD_PATH=$out
   '';
