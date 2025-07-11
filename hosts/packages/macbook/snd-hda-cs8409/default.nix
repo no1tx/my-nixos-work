@@ -31,17 +31,24 @@ in stdenv.mkDerivation {
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
 
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_apple.h build/kernel_sources/
+
+
     cd build
 
     # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
+    patch -p1 < ${moduleSrc}/patch_patch_cirrus_apple.h.diff
 
     # Копируем патченные файлы
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_*.h sound/pci/hda/
+    cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
-    cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
-    cp ${moduleSrc}/patch_cirrus/patch_cirrus_*.h sound/pci/hda/
+    cp kernel_sources/patch_cirrus_apple.h sound/pci/hda/
+    
+    
 
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
