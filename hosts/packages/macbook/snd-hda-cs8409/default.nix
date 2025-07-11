@@ -1,76 +1,99 @@
-{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12 }:
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12
+, version ? "259cc39e243daef170f145ba87ad134239b5967f" }:
 
 let
-  pname = "snd-hda-codec-cs8409";
-  version = "259cc39e243daef170f145ba87ad134239b5967f";
-
   moduleSrc = fetchgit {
     url = "https://github.com/davidjo/snd_hda_macbookpro.git";
     rev = version;
     sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
   };
 
+  kernelSrc = kernel.src;
   kernelDev = kernel.dev;
-  kernelModDirVersion = kernel.modDirVersion;
-  kernelBuild = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
   tmpBuildDir = "/tmp/build_hda";
-in
 
-stdenv.mkDerivation {
-  inherit pname version;
+in stdenv.mkDerivation {
+  name = "snd-hda-codec-cs8409-module-${version}-${kernel.modDirVersion}";
+  inherit version;
 
   src = moduleSrc;
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  buildPhase = ''
-    mkdir -p kernel_sources sound/pci/hda
+  makeFlags = []; # не используем
 
-    # Копируем нужные файлы из ядра и исходников модуля
-    cp ${kernel.src}/sound/pci/hda/patch_cs8409.c kernel_sources/
-    cp ${kernel.src}/sound/pci/hda/patch_cs8409.h kernel_sources/
-    cp ${moduleSrc}/patch_cirrus/patch_cirrus_apple.h kernel_sources/
+  buildPhase = ''
+    mkdir -p build/kernel_sources
+    mkdir -p build/sound/pci/hda
+    mkdir ${tmpBuildDir}
+
+    # Копируем нужные файлы из ядра
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
+
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_apple.h build/kernel_sources/
+
+
+    cd build
 
     # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
     substituteInPlace kernel_sources/patch_cirrus_apple.h \
-      --replace-quiet ".force_status_change = 1," ""
+    --replace ".force_status_change = 1," ""
 
-    # Копируем заголовки Cirrus
+
+    # Копируем патченные файлы
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_new84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_boot84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84_i2c.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_hda_generic_copy.h sound/pci/hda/
-
-    # Копируем остальное из ядра
-    cp ${kernel.src}/sound/pci/hda/patch_cs8409-tables.c sound/pci/hda/
-    cp ${kernel.src}/sound/pci/hda/hda_*.h sound/pci/hda/
-
-    # Копируем патченные исходники
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409-tables.c sound/pci/hda/
+    cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
     cp kernel_sources/patch_cirrus_apple.h sound/pci/hda/
+    
+    
 
-    # Makefile
+    # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
-    cd sound/pci/hda
 
-    # Генерируем инструкции для сборки модуля
-    echo "obj-m := ${pname}.o" >> Makefile
-    echo "${pname}-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
+    # Создаем временную директорию с правами на запись для сборки
+    TMP_BUILD_DIR=$(mktemp -d)
+    cp -r sound/pci/hda/* "${tmpBuildDir}"/
+    cd "${tmpBuildDir}"
 
-    make -C ${kernelBuild} M=$PWD modules
+    # Патчим Makefile под правильный путь к kernelDev и корректный путь M=
+    substituteInPlace Makefile \
+      --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
+      --replace "\$(shell pwd)/build/hda" "${tmpBuildDir}"
+
+    substituteInPlace Makefile --replace "depmod -a" ""
+    echo "obj-m := snd-hda-macbookpro.o" >> Makefile
+    echo "snd-hda-macbookpro-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
+
+    # Собираем модуль в директории с правами записи
+    make \
+      KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
+      KERNELRELEASE=${kernel.modDirVersion} \
+      M=${tmpBuildDir}
+
+    echo "=== Built .ko modules ==="
+    find ${tmpBuildDir}
   '';
 
-
   installPhase = ''
-    install -D -m 0644 ${pname}.ko $out/lib/modules/${kernelModDirVersion}/extra/${pname}.ko
+    modDest=$out/lib/modules/${kernel.modDirVersion}/kernel/sound/pci/hda
+    install -D -m 0644 ${tmpBuildDir}/snd-hda-macbookpro.ko $modDest/snd-hda-macbookpro.ko
+
+    # depmod нужен, чтобы boot.kernelModules мог подгрузить модуль
+    depmod -b $out ${kernel.modDirVersion}
   '';
 
   meta = with lib; {
-    description = "Out-of-tree patched snd-hda-codec-cs8409 module for MacBookPro";
+    description = "Patched snd-hda-codec-cs8409 kernel module for MacBookPro audio";
     license = licenses.gpl2Plus;
     platforms = platforms.linux;
   };
