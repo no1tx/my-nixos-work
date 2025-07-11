@@ -26,27 +26,30 @@ in stdenv.mkDerivation {
 
   buildPhase = ''
     mkdir -p build/kernel_sources
-    mkdir -p build/patch_cirrus
+    mkdir -p build/sound/pci/hda
 
     # Копируем файлы ядра, которые будут патчиться, в kernel_sources
     cp ${kernelSrc}/sound/pci/hda/* build/kernel_sources/
 
     cd build
 
-    # Применяем патчи из исходников (moduleSrc), без переименования
+    # Применяем патчи к копиям исходников
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
 
-    # Копируем патченные файлы в sound/pci/hda
-    mkdir -p sound/pci/hda
+    # Копируем патченные исходники в sound/pci/hda
     cp kernel_sources/* sound/pci/hda/
 
+    # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
+    # Переход в каталог сборки
     cd sound/pci/hda
 
+    # Сборка модуля
     make KERNELRELEASE=${kernel.modDirVersion} \
          KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
+
     make INSTALL_MOD_PATH=$out modules_install
   '';
 
