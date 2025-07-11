@@ -56,13 +56,8 @@ in stdenv.mkDerivation {
     make \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
-      M=$TMP_BUILD_DIR
-
-    make modules_install \
-      KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
-      KERNELRELEASE=${kernel.modDirVersion} \
-      INSTALL_MOD_PATH=$out \
-      M=$TMP_BUILD_DIR
+      M=$TMP_BUILD_DIR \
+      install
   '';
 
   installPhase = "true";
