@@ -6,11 +6,11 @@ stdenv.mkDerivation {
   inherit version;
   name = "snd-hda-codec-cs8409-${version}-module-${kernel.modDirVersion}";
 
-  src = fetchgit {
-    url = "https://github.com/davidjo/snd-hda-macbookpro.git";
-    rev = version;
-    sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
-  };
+  #src = fetchgit {
+  #  url = "https://github.com/davidjo/snd-hda-macbookpro.git";
+  #  rev = version;
+  #  sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
+  #};
 
   patches = [
     ./patch_patch_cs8409.c.diff
