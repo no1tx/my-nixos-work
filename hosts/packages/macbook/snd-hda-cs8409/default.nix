@@ -50,7 +50,6 @@ in stdenv.mkDerivation {
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84_i2c.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_hda_generic_copy.h sound/pci/hda/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409-tables.c sound/pci/hda/
-    cp ${kernelSrc}/sound/pci/hda/patch_cirrus.c sound/pci/hda/
     cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
@@ -74,7 +73,7 @@ in stdenv.mkDerivation {
     substituteInPlace Makefile --replace "depmod -a" ""
     echo "obj-m := snd-hda-patched.o" >> Makefile
     echo "obj-m := snd-hda-patched.o" >> Makefile
-    echo "snd-hda-patched-objs := patch_cs8409.o patch_cs8409-tables.o patch_cirrus.o" >> Makefile
+    echo "snd-hda-patched-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
 
     # Собираем модуль в директории с правами записи
     make \
