@@ -71,9 +71,7 @@ in stdenv.mkDerivation {
       --replace "\$(shell pwd)/build/hda" "${tmpBuildDir}"
 
     substituteInPlace Makefile --replace "depmod -a" ""
-    echo "obj-m := snd-hda-patched.o" >> Makefile
-    echo "obj-m := snd-hda-patched.o" >> Makefile
-    echo "snd-hda-patched-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
+    echo "obj-m := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
 
     # Собираем модуль в директории с правами записи
     make \
