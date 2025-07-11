@@ -35,7 +35,7 @@ in stdenv.mkDerivation {
   buildPhase = ''
     # Копируем исходники ядра в локальную папку build
     mkdir -p build
-    cp -r ${kernelSrc}/source/sound/pci/hda build/
+    cp -r ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda build/
 
     # Применяем патчи к исходникам ядра
     patch -d build/sound/pci/hda -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
