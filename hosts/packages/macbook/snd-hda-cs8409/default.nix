@@ -18,11 +18,7 @@ in stdenv.mkDerivation {
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  makeFlags = kernel.makeFlags ++ [
-    "INSTALL_MOD_PATH=$(out)"
-    "KERNELRELEASE=${kernel.modDirVersion}"
-    "KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build"
-  ];
+  makeFlags = []; # отключаем, неэффективны в этом контексте
 
   buildPhase = ''
     mkdir -p build/kernel_sources
@@ -45,13 +41,15 @@ in stdenv.mkDerivation {
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
-    # Сборка
+    # Переход в рабочий каталог
     cd sound/pci/hda
 
-    make KERNELRELEASE=${kernel.modDirVersion} \
-         KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
+    export KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
+    export KERNELRELEASE=${kernel.modDirVersion}
+    export INSTALL_MOD_PATH=$out
 
-    make INSTALL_MOD_PATH=$out modules_install
+    make
+    make modules_install
   '';
 
   installPhase = "true";
