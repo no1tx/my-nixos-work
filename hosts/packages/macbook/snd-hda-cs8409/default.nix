@@ -31,19 +31,19 @@ in stdenv.mkDerivation {
     # Копируем файлы ядра, которые будут патчиться, в kernel_sources
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
-    cp ${kernelSrc}/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
+    #cp ${kernelSrc}/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
 
     # Копируем патчи в patch_cirrus с именами, как в патче
     cp ${moduleSrc}/patch_patch_cs8409.c.diff build/patch_cirrus/patch_cs8409.c
     cp ${moduleSrc}/patch_patch_cs8409.h.diff build/patch_cirrus/patch_cs8409.h
-    cp ${moduleSrc}/patch_patch_cirrus_apple.h.diff build/patch_cirrus/patch_cirrus_apple.h
+    #cp ${moduleSrc}/patch_patch_cirrus_apple.h.diff build/patch_cirrus/patch_cirrus_apple.h
 
     cd build
 
     # Применяем патчи с -p1 (удаляем только первый элемент 'a/')
     patch -p1 < patch_patch_cs8409.c.diff
     patch -p1 < patch_patch_cs8409.h.diff
-    patch -p1 < patch_patch_cirrus_apple.h.diff
+    #patch -p1 < patch_patch_cirrus_apple.h.diff
 
     # Потом копируем файлы из kernel_sources в sound/pci/hda/
     mkdir -p sound/pci/hda
