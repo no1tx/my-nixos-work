@@ -52,6 +52,8 @@ in stdenv.mkDerivation {
       --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
       --replace "\$(shell pwd)/build/hda" "$TMP_BUILD_DIR"
 
+    substituteInPlace sound/pci/hda/Makefile --replace "depmod -a" ""
+
     # Собираем модуль в директории с правами записи
     make \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
