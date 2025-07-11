@@ -87,9 +87,6 @@ in stdenv.mkDerivation {
   installPhase = ''
     modDest=$out/lib/modules/${kernel.modDirVersion}/kernel/sound/pci/hda
     install -D -m 0644 ${tmpBuildDir}/snd-hda-macbookpro.ko $modDest/snd-hda-macbookpro.ko
-
-    # depmod нужен, чтобы boot.kernelModules мог подгрузить модуль
-    depmod -b $out ${kernel.modDirVersion}
   '';
 
   meta = with lib; {
