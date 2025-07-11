@@ -71,7 +71,8 @@ in stdenv.mkDerivation {
       --replace "\$(shell pwd)/build/hda" "${tmpBuildDir}"
 
     substituteInPlace Makefile --replace "depmod -a" ""
-    echo "obj-m := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
+    echo "obj-m := snd-hda-macbookpro.o" >> Makefile
+    echo "snd-hda-macbookpro-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
 
     # Собираем модуль в директории с правами записи
     make \
@@ -85,6 +86,8 @@ in stdenv.mkDerivation {
 
   installPhase = ''
     install -D -m 0644 ${tmpBuildDir}/patch_cs8409.ko $out/lib/modules/${kernel.modDirVersion}/updates/patch_cs8409.ko
+    # Обновляем модульный кеш
+    depmod -a ${kernel.modDirVersion}
   '';
 
   meta = with lib; {
