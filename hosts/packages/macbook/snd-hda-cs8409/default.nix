@@ -39,7 +39,7 @@ in stdenv.mkDerivation {
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
 
     # Копируем Makefile
-    cp ${src}/Makefile sound/pci/hda/
+    cp ${moduleSrc}/Makefile sound/pci/hda/
 
     cd sound/pci/hda
 
@@ -54,7 +54,7 @@ in stdenv.mkDerivation {
       KERNELRELEASE=${kernel.modDirVersion} \
       INSTALL_MOD_PATH=$out
   '';
-  
+
   installPhase = "true";
 
   meta = with lib; {
