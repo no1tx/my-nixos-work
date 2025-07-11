@@ -1,7 +1,7 @@
 { stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12 }:
 
 let
-  pname = "snd-hda-macbookpro";
+  pname = "snd-hda-codec-cs8409";
   version = "259cc39e243daef170f145ba87ad134239b5967f";
 
   moduleSrc = fetchgit {
