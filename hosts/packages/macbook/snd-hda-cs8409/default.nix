@@ -25,19 +25,36 @@ in stdenv.mkDerivation {
   ];
 
   buildPhase = ''
-    mkdir -p build/sound/pci/
-    cp -r ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda build/sound/pci/
+    mkdir -p build/kernel_sources
+    mkdir -p build/patch_cirrus
 
-    # Применяем патчи из src
-    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cs8409.c.diff
-    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cs8409.h.diff
-    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cirrus_apple.h.diff
+    # Копируем файлы ядра, которые будут патчиться, в kernel_sources
+    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cs8409.c build/kernel_sources/
+    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cs8409.h build/kernel_sources/
+    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
 
-    cp ${moduleSrc}/*.c build/sound/pci/hda/
-    cp ${moduleSrc}/*.h build/sound/pci/hda/
-    cp ${moduleSrc}/Makefile build/sound/pci/hda/
+    # Копируем патчи в patch_cirrus с именами, как в патче
+    cp ${moduleSrc}/patch_patch_cs8409.c.diff build/patch_cirrus/patch_cs8409.c
+    cp ${moduleSrc}/patch_patch_cs8409.h.diff build/patch_cirrus/patch_cs8409.h
+    cp ${moduleSrc}/patch_patch_cirrus_apple.h.diff build/patch_cirrus/patch_cirrus_apple.h
 
-    cd build/sound/pci/hda
+    cd build
+
+    # Применяем патчи с -p1 (удаляем только первый элемент 'a/')
+    patch -p1 < patch_patch_cs8409.c.diff
+    patch -p1 < patch_patch_cs8409.h.diff
+    patch -p1 < patch_patch_cirrus_apple.h.diff
+
+    # Потом копируем файлы из kernel_sources в sound/pci/hda/
+    mkdir -p sound/pci/hda
+    cp kernel_sources/* sound/pci/hda/
+
+    # Теперь копируем исходники модуля из moduleSrc
+    cp ${moduleSrc}/*.c sound/pci/hda/
+    cp ${moduleSrc}/*.h sound/pci/hda/
+    cp ${moduleSrc}/Makefile sound/pci/hda/
+
+    cd sound/pci/hda
 
     make KERNELRELEASE=${kernel.modDirVersion} KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
     make INSTALL_MOD_PATH=$(out) modules_install
