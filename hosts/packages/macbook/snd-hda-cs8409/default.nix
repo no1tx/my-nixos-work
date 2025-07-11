@@ -39,7 +39,7 @@ in stdenv.mkDerivation {
     # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
-    substituteInPlace build/kernel_sources/patch_cirrus_apple.h \
+    substituteInPlace kernel_sources/patch_cirrus_apple.h \
     --replace ".force_status_change = 1," ""
 
 
