@@ -31,33 +31,27 @@ in stdenv.mkDerivation {
     # Копируем файлы ядра, которые будут патчиться, в kernel_sources
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
-    #cp ${kernelSrc}/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
-
-    # Копируем патчи в patch_cirrus с именами, как в патче
-    cp ${moduleSrc}/patch_patch_cs8409.c.diff build/patch_cirrus/patch_cs8409.c
-    cp ${moduleSrc}/patch_patch_cs8409.h.diff build/patch_cirrus/patch_cs8409.h
-    #cp ${moduleSrc}/patch_patch_cirrus_apple.h.diff build/patch_cirrus/patch_cirrus_apple.h
 
     cd build
 
-    # Применяем патчи с -p1 (удаляем только первый элемент 'a/')
-    patch -p1 < patch_patch_cs8409.c.diff
-    patch -p1 < patch_patch_cs8409.h.diff
-    #patch -p1 < patch_patch_cirrus_apple.h.diff
+    # Применяем патчи из исходников (moduleSrc), без переименования
+    patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
+    patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
 
-    # Потом копируем файлы из kernel_sources в sound/pci/hda/
+    # Копируем патченные файлы в sound/pci/hda
     mkdir -p sound/pci/hda
     cp kernel_sources/* sound/pci/hda/
 
-    # Теперь копируем исходники модуля из moduleSrc
+    # Добавляем новые исходники из репозитория
     cp ${moduleSrc}/*.c sound/pci/hda/
     cp ${moduleSrc}/*.h sound/pci/hda/
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
     cd sound/pci/hda
 
-    make KERNELRELEASE=${kernel.modDirVersion} KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
-    make INSTALL_MOD_PATH=$(out) modules_install
+    make KERNELRELEASE=${kernel.modDirVersion} \
+         KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
+    make INSTALL_MOD_PATH=$out modules_install
   '';
 
   installPhase = "true";
