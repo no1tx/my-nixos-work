@@ -19,19 +19,19 @@ in stdenv.mkDerivation {
 
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
-  makeFlags = []; # отключаем, неэффективны в этом контексте
+  makeFlags = []; # не используем
 
   buildPhase = ''
     mkdir -p build/kernel_sources
     mkdir -p build/sound/pci/hda
 
-    # Копируем нужные файлы
+    # Копируем нужные файлы из ядра
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
 
     cd build
 
-    # Патчи
+    # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
 
@@ -42,22 +42,27 @@ in stdenv.mkDerivation {
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
-    substituteInPlace sound/pci/hda/Makefile \
-    --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
-    --replace "\$(shell pwd)/build/hda" "."
+    # Создаем временную директорию с правами на запись для сборки
+    TMP_BUILD_DIR=$(mktemp -d)
+    cp -r sound/pci/hda/* "$TMP_BUILD_DIR"/
+    cd "$TMP_BUILD_DIR"
 
-    cd sound/pci/hda
+    # Патчим Makefile под правильный путь к kernelDev и корректный путь M=
+    substituteInPlace Makefile \
+      --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelDev}/lib/modules/${kernel.modDirVersion}" \
+      --replace "\$(shell pwd)/build/hda" "$TMP_BUILD_DIR"
 
+    # Собираем модуль в директории с правами записи
     make \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
-      INSTALL_MOD_PATH=$out
+      M=$TMP_BUILD_DIR
 
-    make \
-      modules_install \
+    make modules_install \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
-      INSTALL_MOD_PATH=$out
+      INSTALL_MOD_PATH=$out \
+      M=$TMP_BUILD_DIR
   '';
 
   installPhase = "true";
