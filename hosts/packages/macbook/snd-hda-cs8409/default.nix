@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxPackages_xanmod.kernel
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? pkgs.linuxPackages_xanmod.kernel
 , version ? "259cc39e243daef170f145ba87ad134239b5967f" }:
 
 stdenv.mkDerivation {
