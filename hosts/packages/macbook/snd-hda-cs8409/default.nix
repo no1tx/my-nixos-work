@@ -60,7 +60,10 @@ in stdenv.mkDerivation {
     make \
       KERNEL_DIR=${kernelDev}/lib/modules/${kernel.modDirVersion}/build \
       KERNELRELEASE=${kernel.modDirVersion} \
-      M=${tmpBuildDir} \
+      M=${tmpBuildDir}
+
+    echo "=== Built .ko modules ==="
+    find ${tmpBuildDir}
   '';
 
   installPhase = ''
