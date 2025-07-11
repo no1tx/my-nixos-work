@@ -13,6 +13,7 @@ let
   kernelDev = kernel.dev;
   kernelModDirVersion = kernel.modDirVersion;
   kernelBuild = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
+  tmpBuildDir = "/tmp/build_hda";
 in
 
 stdenv.mkDerivation {
@@ -23,7 +24,7 @@ stdenv.mkDerivation {
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
   buildPhase = ''
-    mkdir -p build/kernel_sources build/sound/pci/hda
+    mkdir -p build/kernel_sources build/sound/pci/hda ${tmpBuildDir}
 
     # Копируем нужные файлы из исходников ядра и патчи
     cp ${kernel.src}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
@@ -48,7 +49,8 @@ stdenv.mkDerivation {
     cp kernel_sources/patch_cirrus_apple.h sound/pci/hda/
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
-    cd sound/pci/hda
+    cp -r sound/pci/hda/* "${tmpBuildDir}"/
+    cd "${tmpBuildDir}"
 
     # Дописываем Makefile для сборки единого модуля
     echo "obj-m := ${pname}.o" >> Makefile
