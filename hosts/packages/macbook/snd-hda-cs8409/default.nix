@@ -25,6 +25,7 @@ in stdenv.mkDerivation {
   buildPhase = ''
     mkdir -p build/kernel_sources
     mkdir -p build/sound/pci/hda
+    mkdir ${tmpBuildDir}
 
     # Копируем нужные файлы из ядра
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
