@@ -50,6 +50,7 @@ in stdenv.mkDerivation {
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84_i2c.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_hda_generic_copy.h sound/pci/hda/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409-tables.c sound/pci/hda/
+    cp ${kernelSrc}/sound/pci/hda/patch_cirrus.c sound/pci/hda/
     cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
