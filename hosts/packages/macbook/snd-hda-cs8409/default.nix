@@ -25,8 +25,8 @@ in stdenv.mkDerivation {
   ];
 
   buildPhase = ''
-    mkdir -p build
-    cp -r ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda build/
+    mkdir -p build/sound/pci/
+    cp -r ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda build/sound/pci/
 
     # Применяем патчи из src
     patch -d build/sound/pci/hda -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
