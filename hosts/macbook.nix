@@ -8,7 +8,7 @@
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_xanmod;
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
   boot.loader.systemd-boot.enable = true;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
@@ -73,7 +73,7 @@
   boot = {
     extraModulePackages = [
       (pkgs.callPackage ./packages/macbook/snd-hda-cs8409/default.nix {
-        kernel = pkgs.linuxPackages_xanmod.kernel;
+        kernel = pkgs.linuxPackages_6_6.kernel;
       })
     ];
   };
