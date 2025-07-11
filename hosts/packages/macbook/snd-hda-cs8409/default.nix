@@ -41,6 +41,10 @@ in stdenv.mkDerivation {
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
+    substituteInPlace sound/pci/hda/Makefile \
+    --replace "/lib/modules/\$(KERNELRELEASE)" "${kernelSrc}/lib/modules/${kernel.modDirVersion}" \
+    --replace "\$(shell pwd)/build/hda" "."
+
     cd sound/pci/hda
 
     make \
