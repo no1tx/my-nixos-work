@@ -29,9 +29,9 @@ in stdenv.mkDerivation {
     mkdir -p build/patch_cirrus
 
     # Копируем файлы ядра, которые будут патчиться, в kernel_sources
-    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cs8409.c build/kernel_sources/
-    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cs8409.h build/kernel_sources/
-    cp ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cirrus_apple.h build/kernel_sources/
 
     # Копируем патчи в patch_cirrus с именами, как в патче
     cp ${moduleSrc}/patch_patch_cs8409.c.diff build/patch_cirrus/patch_cs8409.c
