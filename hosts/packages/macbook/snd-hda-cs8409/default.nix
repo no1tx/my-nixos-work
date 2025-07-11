@@ -29,9 +29,9 @@ in stdenv.mkDerivation {
     cp -r ${kernelSrc}/lib/modules/${kernel.modDirVersion}/source/sound/pci/hda build/sound/pci/
 
     # Применяем патчи из src
-    patch -d build/sound/pci/hda -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
-    patch -d build/sound/pci/hda -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
-    patch -d build/sound/pci/hda -p1 < ${moduleSrc}/patch_patch_cirrus_apple.h.diff
+    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cs8409.c.diff
+    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cs8409.h.diff
+    patch -d build/sound/pci/hda -p2 < ${moduleSrc}/patch_patch_cirrus_apple.h.diff
 
     cp ${moduleSrc}/*.c build/sound/pci/hda/
     cp ${moduleSrc}/*.h build/sound/pci/hda/
