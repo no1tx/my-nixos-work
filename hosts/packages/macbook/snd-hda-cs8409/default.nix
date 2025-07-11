@@ -46,6 +46,9 @@ in stdenv.mkDerivation {
     # Копируем патченные файлы
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_new84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_boot84.h sound/pci/hda/
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84.h sound/pci/hda/
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84_i2c.h sound/pci/hda/
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_hda_generic_copy.h sound/pci/hda/
     cp ${kernelSrc}/sound/pci/hda/hda_*.h sound/pci/hda/
     cp kernel_sources/patch_cs8409.c sound/pci/hda/
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
