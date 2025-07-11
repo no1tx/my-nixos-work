@@ -71,8 +71,8 @@ in stdenv.mkDerivation {
       --replace "\$(shell pwd)/build/hda" "${tmpBuildDir}"
 
     substituteInPlace Makefile --replace "depmod -a" ""
-    echo "obj-m := snd-hda-macbookpro.o" >> Makefile
-    echo "snd-hda-macbookpro-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
+    echo "obj-m := snd-hda-codec-cs8409.o" >> Makefile
+    echo "snd-hda-codec-cs8409-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
 
     # Собираем модуль в директории с правами записи
     make \
@@ -86,7 +86,7 @@ in stdenv.mkDerivation {
 
   installPhase = ''
     modDest=$out/lib/modules/${kernel.modDirVersion}/kernel/sound/pci/hda
-    install -D -m 0644 ${tmpBuildDir}/snd-hda-macbookpro.ko $modDest/snd-hda-macbookpro.ko
+    install -D -m 0644 ${tmpBuildDir}/snd-hda-codec-cs8409.ko $modDest/snd-hda-codec-cs8409.ko
   '';
 
   meta = with lib; {
