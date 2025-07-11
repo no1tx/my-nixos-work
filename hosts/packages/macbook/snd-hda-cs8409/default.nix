@@ -41,6 +41,8 @@ in stdenv.mkDerivation {
     mkdir -p sound/pci/hda
     cp kernel_sources/* sound/pci/hda/
 
+    cp ${moduleSrc}/Makefile sound/pci/hda/
+
     cd sound/pci/hda
 
     make KERNELRELEASE=${kernel.modDirVersion} \
