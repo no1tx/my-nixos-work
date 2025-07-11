@@ -8,7 +8,7 @@ let
     sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
   };
 
-  kernelSrc = kernel.dev;
+  kernelSrc = kernel.src;
 
 in stdenv.mkDerivation {
   name = "snd-hda-codec-cs8409-module-${version}-${kernel.modDirVersion}";
