@@ -85,8 +85,6 @@ in stdenv.mkDerivation {
 
   installPhase = ''
     install -D -m 0644 ${tmpBuildDir}/patch_cs8409.ko $out/lib/modules/${kernel.modDirVersion}/updates/patch_cs8409.ko
-    # Обновляем модульный кеш
-    depmod -a ${kernel.modDirVersion}
   '';
 
   meta = with lib; {
