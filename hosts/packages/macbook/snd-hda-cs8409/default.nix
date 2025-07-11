@@ -1,5 +1,5 @@
-{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_5_15
-, version ? "d0d785dc1859b09299bde6d0f1d6786a0d610e7f" }:
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_6
+, version ? "f30643972f47f63f340e49aadddbcb61729dac03" }:
 
 stdenv.mkDerivation {
 
@@ -9,9 +9,9 @@ stdenv.mkDerivation {
   # Upstream: https://github.com/davidjo/snd_hda_macbookpro
 
   src = fetchgit {
-    url = "https://github.com/egorenar/snd-hda-codec-cs8409.git";
+    url = "https://github.com/no1tx/snd-hda-macbookpro.git";
     rev = version;
-    sha256 = "sha256-0UeoERcYpM+ojeZ7dDIE3ruTIoHkkC+s7FcoEVUTR0w=";
+    sha256 = "sha256-wZbRcen6uLahb/goX4t2ECtzv8XqZ6kRPN8bp1NTCR0=";
   };
 
   hardeningDisable = [ "pic" ];
