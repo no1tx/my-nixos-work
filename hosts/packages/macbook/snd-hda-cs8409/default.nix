@@ -1,11 +1,11 @@
-{ stdenv, lib, fetchgit, kernel ? linuxKernel.kernels.linux_6_12
-, version ? "f30643972f47f63f340e49aadddbcb61729dac03" }:
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12
+, version ? "259cc39e243daef170f145ba87ad134239b5967f" }:
 
 let
   moduleSrc = fetchgit {
-    url = "https://github.com/davidjo/snd-hda-macbookpro.git";
+    url = "https://github.com/davidjo/snd_hda_macbookpro.git";
     rev = version;
-    sha256 = "sha256-wZbRcen6uLahb/goX4t2ECtzv8XqZ6kRPN8bp1NTCR0=";
+    sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
   };
 
   kernelSrc = kernel.dev;
