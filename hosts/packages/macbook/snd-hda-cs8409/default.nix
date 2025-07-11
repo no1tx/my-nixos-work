@@ -28,25 +28,26 @@ in stdenv.mkDerivation {
     mkdir -p build/kernel_sources
     mkdir -p build/sound/pci/hda
 
-    # Копируем файлы ядра, которые будут патчиться, в kernel_sources
-    cp ${kernelSrc}/sound/pci/hda/* build/kernel_sources/
+    # Копируем только нужные файлы ядра, которые будут патчиться
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
+    cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
 
     cd build
 
-    # Применяем патчи к копиям исходников
+    # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
 
-    # Копируем патченные исходники в sound/pci/hda
-    cp kernel_sources/* sound/pci/hda/
+    # Копируем патченные файлы
+    cp kernel_sources/patch_cs8409.c sound/pci/hda/
+    cp kernel_sources/patch_cs8409.h sound/pci/hda/
 
     # Копируем Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
 
-    # Переход в каталог сборки
+    # Сборка
     cd sound/pci/hda
 
-    # Сборка модуля
     make KERNELRELEASE=${kernel.modDirVersion} \
          KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
 
