@@ -24,40 +24,46 @@ stdenv.mkDerivation {
   nativeBuildInputs = kernel.moduleBuildDependencies;
 
   buildPhase = ''
-    mkdir -p build/kernel_sources build/sound/pci/hda ${tmpBuildDir}
+    mkdir -p kernel_sources sound/pci/hda
 
-    # Копируем нужные файлы из исходников ядра и патчи
-    cp ${kernel.src}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
-    cp ${kernel.src}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
-    cp ${moduleSrc}/patch_cirrus/patch_cirrus_apple.h build/kernel_sources/
+    # Копируем нужные файлы из ядра и исходников модуля
+    cp ${kernel.src}/sound/pci/hda/patch_cs8409.c kernel_sources/
+    cp ${kernel.src}/sound/pci/hda/patch_cs8409.h kernel_sources/
+    cp ${moduleSrc}/patch_cirrus/patch_cirrus_apple.h kernel_sources/
 
-    cd build
-
+    # Применяем патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
     substituteInPlace kernel_sources/patch_cirrus_apple.h \
-      --replace ".force_status_change = 1," ""
+      --replace-quiet ".force_status_change = 1," ""
 
+    # Копируем заголовки Cirrus
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_new84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_boot84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_real84_i2c.h sound/pci/hda/
     cp ${moduleSrc}/patch_cirrus/patch_cirrus_hda_generic_copy.h sound/pci/hda/
+
+    # Копируем остальное из ядра
     cp ${kernel.src}/sound/pci/hda/patch_cs8409-tables.c sound/pci/hda/
     cp ${kernel.src}/sound/pci/hda/hda_*.h sound/pci/hda/
-    cp kernel_sources/patch_cs8409.* sound/pci/hda/
+
+    # Копируем патченные исходники
+    cp kernel_sources/patch_cs8409.c sound/pci/hda/
+    cp kernel_sources/patch_cs8409.h sound/pci/hda/
     cp kernel_sources/patch_cirrus_apple.h sound/pci/hda/
+
+    # Makefile
     cp ${moduleSrc}/Makefile sound/pci/hda/
+    cd sound/pci/hda
 
-    cp -r sound/pci/hda/* "${tmpBuildDir}"/
-    cd "${tmpBuildDir}"
-
-    # Дописываем Makefile для сборки единого модуля
+    # Генерируем инструкции для сборки модуля
     echo "obj-m := ${pname}.o" >> Makefile
     echo "${pname}-objs := patch_cs8409.o patch_cs8409-tables.o" >> Makefile
 
-    make -C ${kernelBuild} M=$(pwd) modules
+    make -C ${kernelBuild} M=$PWD modules
   '';
+
 
   installPhase = ''
     install -D -m 0644 ${pname}.ko $out/lib/modules/${kernelModDirVersion}/extra/${pname}.ko
