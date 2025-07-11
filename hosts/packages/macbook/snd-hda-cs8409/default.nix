@@ -24,13 +24,13 @@ in stdenv.mkDerivation {
     mkdir -p build/kernel_sources
     mkdir -p build/sound/pci/hda
 
-    # Копируем только нужные файлы ядра, которые будут патчиться
+    # Копируем нужные файлы
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.c build/kernel_sources/
     cp ${kernelSrc}/sound/pci/hda/patch_cs8409.h build/kernel_sources/
 
     cd build
 
-    # Применяем патчи
+    # Патчи
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.c.diff
     patch -p1 < ${moduleSrc}/patch_patch_cs8409.h.diff
 
@@ -39,19 +39,22 @@ in stdenv.mkDerivation {
     cp kernel_sources/patch_cs8409.h sound/pci/hda/
 
     # Копируем Makefile
-    cp ${moduleSrc}/Makefile sound/pci/hda/
+    cp ${src}/Makefile sound/pci/hda/
 
-    # Переход в рабочий каталог
     cd sound/pci/hda
 
-    export KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build
-    export KERNELRELEASE=${kernel.modDirVersion}
-    export INSTALL_MOD_PATH=$out
+    make \
+      KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build \
+      KERNELRELEASE=${kernel.modDirVersion} \
+      INSTALL_MOD_PATH=$out
 
-    make
-    make modules_install
+    make \
+      modules_install \
+      KERNEL_DIR=${kernelSrc}/lib/modules/${kernel.modDirVersion}/build \
+      KERNELRELEASE=${kernel.modDirVersion} \
+      INSTALL_MOD_PATH=$out
   '';
-
+  
   installPhase = "true";
 
   meta = with lib; {
