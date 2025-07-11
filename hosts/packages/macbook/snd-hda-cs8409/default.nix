@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchgit, kernel ? linuxKernel.kernels.linux_6_12
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12
 , version ? "f30643972f47f63f340e49aadddbcb61729dac03" }:
 
 let
