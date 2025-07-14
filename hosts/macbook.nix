@@ -96,5 +96,5 @@
       efiSysMountPoint = "/boot/";
     };
   };
-  hardware.enableAllFirmware = true
+  hardware.enableAllFirmware = true;
 }

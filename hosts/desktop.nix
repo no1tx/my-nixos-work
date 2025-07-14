@@ -56,5 +56,5 @@
     };
   };
   hardware.cpu.intel.updateMicrocode = true;
-  hardware.enableAllFirmware = true
+  hardware.enableAllFirmware = true;
 }
