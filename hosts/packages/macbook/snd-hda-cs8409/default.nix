@@ -1,10 +1,11 @@
-{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12, version ? "fasoli"}:
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12
+, version ? "259cc39e243daef170f145ba87ad134239b5967f" }:
 
 let
   moduleSrc = fetchgit {
-    url = "https://github.com/no1tx/snd_hda_macbookpro.git";
-    rev = "refs/heads/pr-90";
-    sha256 = "sha256-xYtAdWmC3Ac1FR1nquJteXMhQRGjZdyNuCCFp1K83yU=";
+    url = "https://github.com/davidjo/snd_hda_macbookpro.git";
+    rev = version;
+    sha256 = "sha256-M1dE4QC7mYFGFU3n4mrkelqU/ZfCA4ycwIcYVsrA4MY=";
   };
 
   kernelSrc = kernel.src;
