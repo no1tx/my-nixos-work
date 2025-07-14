@@ -90,4 +90,10 @@
   systemd.extraConfig = ''
     HibernateDelaySec=0
   '';
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot/";
+    };
+  };
 }
