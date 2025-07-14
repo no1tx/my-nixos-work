@@ -3,6 +3,7 @@
   imports = [ ../hardware-configuration.nix ];
 
   networking.hostName = "btc-work";
+  zramSwap.enable = true;
 
   # Видео и звук (nvidia, modesetting, etc)
   services.xserver.enable = true;
