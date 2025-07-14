@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12 }:
+{ stdenv, lib, fetchgit, linuxKernel, kernel ? linuxKernel.kernels.linux_6_12, version ? "fasoli"}:
 
 let
   moduleSrc = fetchgit {
