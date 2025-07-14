@@ -56,4 +56,5 @@
     };
   };
   hardware.cpu.intel.updateMicrocode = true;
+  boot.plymouth.enable = true;
 }

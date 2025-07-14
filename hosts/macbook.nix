@@ -81,4 +81,5 @@
    hardware.graphics.extraPackages = with pkgs; [
     intel-media-driver
    ];
+  boot.plymouth.enable = true;
 }
