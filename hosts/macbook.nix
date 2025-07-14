@@ -82,4 +82,13 @@
     intel-media-driver
    ];
   boot.plymouth.enable = true;
+  services.logind = {
+    lidSwitch = "hibernate";
+    lidSwitchDocked = "ignore"; 
+    powerKey = "hibernate";
+  };
+
+  systemd.extraConfig = ''
+    HibernateDelaySec=0
+  '';
 }
