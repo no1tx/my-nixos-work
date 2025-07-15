@@ -1,15 +1,16 @@
 { config, pkgs, ... }:
+
+# --- Импорт аппаратных профилей ---
 {
   imports = [ ../hardware-configuration.nix ];
 
+  # --- Сетевые параметры ---
   networking.hostName = "btc-macbook-work";
 
-  # Видео и звук (nvidia, modesetting, etc)
+  # --- Видео и звук (NVIDIA, PipeWire, PulseAudio) ---
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
   services.displayManager.sddm.wayland.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-  boot.loader.systemd-boot.enable = true;
   hardware.graphics.enable = true;
   hardware.pulseaudio.enable = false;
   services.pipewire = {
@@ -19,7 +20,17 @@
     jack.enable = false;
   };
 
-  # Touchpad/keyboard quirks (libinput overrides)
+  # --- Загрузчик и ядро ---
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot/";
+    };
+  };
+
+  # --- Touchpad/keyboard quirks (libinput overrides) ---
   services.libinput.enable = true;
   environment.etc."libinput/local-overrides.quirks".text = ''
     [MacBook(Pro) SPI Touchpads]
@@ -39,14 +50,14 @@
     AttrKeyboardIntegration=internal
   '';
 
-  # Firmware, microcode, WiFi
+  # --- Firmware, microcode, WiFi ---
   networking.enableB43Firmware = true;
   hardware = {
     enableRedistributableFirmware = true;
     cpu.intel.updateMicrocode = true;
   };
 
-  # Клавиатура (applespi) и iommu
+  # --- Клавиатура (applespi) и iommu ---
   boot.initrd.kernelModules = [
     "applespi"
     "spi_pxa2xx_platform"
@@ -70,6 +81,7 @@
     "i915.enable_psr=2"
   ];
 
+  # --- Специфический пакет для исправления звука MacBook Pro 2017 ---
   boot = {
     extraModulePackages = [
       (pkgs.callPackage ./packages/macbook/snd-hda-cs8409/default.nix {
@@ -78,22 +90,19 @@
     ];
   };
 
-   hardware.graphics.extraPackages = with pkgs; [
+  hardware.graphics.extraPackages = with pkgs; [
     intel-media-driver
-   ];
+  ];
+
+  # --- Поведение при закрытии крышки и кнопках питания ---
   services.logind = {
     lidSwitch = "hibernate";
-    lidSwitchDocked = "ignore"; 
+    lidSwitchDocked = "ignore";
     powerKey = "hibernate";
   };
 
+  # --- Дополнительная конфигурация systemd ---
   systemd.extraConfig = ''
     HibernateDelaySec=0
   '';
-  boot.loader = {
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/";
-    };
-  };
 }

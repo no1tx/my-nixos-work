@@ -1,10 +1,13 @@
 { config, pkgs, ... }:
+
+# --- Импорт аппаратных профилей ---
 {
   imports = [ ../hardware-configuration.nix ];
 
+  # --- Сетевые параметры ---
   networking.hostName = "btc-work";
 
-  # Видео и звук (nvidia, modesetting, etc)
+  # --- Видео и звук (NVIDIA, PipeWire, PulseAudio) ---
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
@@ -13,6 +16,16 @@
     powerManagement.enable = true;
     # open = true;
   };
+  hardware.graphics.enable = true;
+  hardware.pulseaudio.enable = false;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+    jack.enable = false;
+  };
+
+  # --- Загрузчик и ядро ---
   boot.loader = {
     grub = {
       enable = true;
@@ -26,16 +39,11 @@
     };
   };
   boot.kernelPackages = pkgs.linuxPackages_xanmod;
-  hardware.graphics.enable = true;
-  hardware.pulseaudio.enable = false;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
-    jack.enable = false;
-  };
 
-  # systemd: Звуки при загрузке и выключении
+  # --- Системные сервисы и обновления ---
+  hardware.cpu.intel.updateMicrocode = true;
+
+  # --- systemd: Звуки при загрузке и выключении ---
   systemd.services.startup-beep = {
     description = "Beep on system boot";
     wantedBy = [ "multi-user.target" ];
@@ -55,5 +63,4 @@
       RemainAfterExit = true;
     };
   };
-  hardware.cpu.intel.updateMicrocode = true;
 }
