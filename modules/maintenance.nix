@@ -17,7 +17,7 @@
       Type = "oneshot";
       User = "root";
       WorkingDirectory = "/etc/nixos";
-      ExecStart = "${pkgs.git}/bin/git pull --rebase && ${pkgs.git}/bin/git fetch --all";
+      ExecStart = "${pkgs.git}/bin/git pull --rebase";
     };
   };
   systemd.timers.git-update-nixos-config = {
