@@ -7,7 +7,7 @@
     helix vim neovim
     terminus_font beep lnav firefox home-manager virt-manager-qt
     virt-manager syncthing jetbrains.pycharm-community vscode
-    arc-theme mc flashrom dmidecode
+    arc-theme mc flashrom dmidecode code-cursor
   ];
   nixpkgs.config.allowUnfree = true;
 
