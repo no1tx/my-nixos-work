@@ -31,4 +31,12 @@
       Requires = [ "systemd-networkd-wait-online.service" ];
     };
   };
+  environment.systemPackages = with pkgs; [
+    (writeShellScriptBin "nixos-super-upgrade" ''
+      set -e
+      cd /etc/nixos
+      ${pkgs.git}/bin/git pull --rebase
+      ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch
+    '')
+  ];
 }
