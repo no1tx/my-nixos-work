@@ -1,18 +1,15 @@
 { config, pkgs, ... }:
 
 let
-
   home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz;
-
 in
 
 {
+  imports = [
+    (import "${home-manager}/nixos")
+  ];
 
-  imports =
-    [
-      (import "${home-manager}/nixos")
-    ];
-
+  # --- Пользователь no1_tx ---
   users.users.no1_tx = {
     isNormalUser = true;
     shell = pkgs.zsh;
@@ -22,6 +19,14 @@ in
       "audio" "libvirtd" "podman"
     ];
   };
+
+  # --- Пользователь root: shell и prompt ---
+  users.users.root = {
+    shell = pkgs.zsh;
+  };
+  environment.systemPackages = with pkgs; [ zsh starship ];
+
+  # --- Home Manager: пользовательские настройки ---
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.backupFileExtension = "backup";
@@ -35,6 +40,8 @@ in
       starship = {
         enable = true;
         enableZshIntegration = true;
+        # Внедряем пресет pastel-powerline
+        settings = builtins.fromTOML (builtins.readFile ./configs/starship-pastel-powerline.toml);
       };
     };
     home.packages = with pkgs; [
@@ -78,4 +85,7 @@ in
       </fontconfig>
     '';
   };
+
+  # --- Настройка starship для root через system-wide конфиг ---
+  environment.etc."starship.toml".source = ./configs/starship-pastel-powerline.toml;
 }
