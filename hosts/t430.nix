@@ -27,6 +27,7 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   services.thermald.enable = true;
   services.fwupd.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
 
   services.logind = {
