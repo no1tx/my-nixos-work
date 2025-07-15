@@ -20,9 +20,19 @@ in
     ];
   };
 
+  # --- Автоматический запуск starship для root (zsh) ---
+  environment.etc."zshrc.root".text = ''
+    if [ -x "$(command -v starship)" ]; then
+      eval "$(starship init zsh)"
+    fi
+  '';
   # --- Пользователь root: shell и prompt ---
   users.users.root = {
     shell = pkgs.zsh;
+    # Симлинк .zshrc на /etc/zshrc.root
+    home = "/root";
+    # Если поддерживается, можно добавить:
+    # home.file.".zshrc".source = "/etc/zshrc.root";
   };
   environment.systemPackages = with pkgs; [ zsh starship ];
 
@@ -43,6 +53,8 @@ in
         # Внедряем пресет pastel-powerline
         settings = builtins.fromTOML (builtins.readFile ./configs/catppuccin-powerline.toml);
       };
+      git.userName = "Pavel Isaev";
+      git.userEmail = "boss@nw-sys.ru";
     };
     home.packages = with pkgs; [
       zsh-autosuggestions
@@ -88,4 +100,16 @@ in
 
   # --- Настройка starship для root через system-wide конфиг ---
   environment.etc."starship.toml".source = ./configs/catppuccin-powerline.toml;
+
+  # --- Systemd unit: симлинк /root/.zshrc на /etc/zshrc.root ---
+  systemd.services.root-zshrc-symlink = {
+    description = "Ensure /root/.zshrc is a symlink to /etc/zshrc.root";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/run/current-system/sw/bin/ln -sf /etc/zshrc.root /root/.zshrc";
+      User = "root";
+    };
+  };
 }
