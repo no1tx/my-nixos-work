@@ -41,7 +41,7 @@ in
         enable = true;
         enableZshIntegration = true;
         # Внедряем пресет pastel-powerline
-        settings = builtins.fromTOML (builtins.readFile ./configs/starship-pastel-powerline.toml);
+        settings = builtins.fromTOML (builtins.readFile ./configs/jetpack.toml);
       };
     };
     home.packages = with pkgs; [
@@ -87,5 +87,5 @@ in
   };
 
   # --- Настройка starship для root через system-wide конфиг ---
-  environment.etc."starship.toml".source = ./configs/starship-pastel-powerline.toml;
+  environment.etc."starship.toml".source = ./configs/jetpack.toml;
 }
