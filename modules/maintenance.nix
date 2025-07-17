@@ -34,6 +34,10 @@
   environment.systemPackages = with pkgs; [
     (writeShellScriptBin "nixos-super-upgrade" ''
       set -e
+      if [ "$EUID" -ne 0 ]; then
+        echo "Requesting sudo to run nixos-super-upgrade..."
+        exec sudo "$0" "$@"
+      fi
       cd /etc/nixos
       ${pkgs.git}/bin/git pull --rebase
       ${pkgs.nixos-rebuild}/bin/nixos-rebuild switch
