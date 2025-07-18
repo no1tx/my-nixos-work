@@ -34,7 +34,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    maliit-keyboard
+    maliit-keyboard maliit-framework
   ];
 
   environment.sessionVariables = {
