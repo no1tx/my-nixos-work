@@ -23,22 +23,21 @@
   services.thermald.enable = true;      # Контроль температуры CPU
   services.fwupd.enable = true;         # Обновление прошивок
 
-  # --- Графическая оболочка и дисплей ---
-  services.displayManager.sddm.enable = true;         # Графический дисплей-менеджер SDDM
-  services.displayManager.sddm.wayland.enable = true; # Поддержка Wayland
+  # --- Графическая оболочка и дисплей: GNOME + GDM ---
+  services.xserver.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;   # GNOME как DE
+  services.xserver.displayManager.gdm.enable = true;     # GDM как DM
+  # Можно добавить Wayland:
+  services.xserver.displayManager.gdm.wayland = true;
 
   # --- Поведение при закрытии крышки и кнопках питания ---
   services.logind = {
     lidSwitch = "suspend";         # При закрытии крышки — suspend
     lidSwitchDocked = "ignore";   # В доке — игнорировать
   };
-
-  environment.systemPackages = with pkgs; [
-    maliit-keyboard maliit-framework
-  ];
-
-  environment.sessionVariables = {
-    QT_IM_MODULE = "maliit";
-  };
+  
   services.libinput.enable = true;
+
+  # Отключаем Plasma, если она включена в общем desktop.nix
+  services.desktopManager.plasma6.enable = false;
 }
