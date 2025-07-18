@@ -33,14 +33,14 @@
     lidSwitchDocked = "ignore";   # В доке — игнорировать
   };
 
-  services.displayManager.sddm.settings = {
-    General = {
-      InputMethod = "qtvirtualkeyboard";
-    };
-  };
+  services.maliit.enable = true;
 
-  environment.variables = {
-    QT_IM_MODULE = "qtvirtualkeyboard";
+  environment.systemPackages = with pkgs; [
+    maliit-keyboard
+  ];
+
+  environment.sessionVariables = {
+    QT_IM_MODULE = "maliit";
   };
   services.libinput.enable = true;
 }
