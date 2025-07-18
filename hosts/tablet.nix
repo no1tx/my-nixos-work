@@ -33,8 +33,6 @@
     lidSwitchDocked = "ignore";   # В доке — игнорировать
   };
 
-  services.maliit.enable = true;
-
   environment.systemPackages = with pkgs; [
     maliit-keyboard
   ];
