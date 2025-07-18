@@ -67,4 +67,6 @@
   };
 
   services.fprintd.enable = true;
+  services.trayscale.enable = true;
+  services.trayscale.hideWindow = true;
 }
