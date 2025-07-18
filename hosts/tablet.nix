@@ -35,9 +35,9 @@
     lidSwitch = "suspend";         # При закрытии крышки — suspend
     lidSwitchDocked = "ignore";   # В доке — игнорировать
   };
-  
+
   services.libinput.enable = true;
 
   # Отключаем Plasma, если она включена в общем desktop.nix
-  services.desktopManager.plasma6.enable = false;
+  services.desktopManager.plasma6.enable = lib.mkForce false;
 }
