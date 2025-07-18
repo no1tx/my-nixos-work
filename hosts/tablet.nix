@@ -32,4 +32,15 @@
     lidSwitch = "suspend";         # При закрытии крышки — suspend
     lidSwitchDocked = "ignore";   # В доке — игнорировать
   };
+
+  services.displayManager.sddm.settings = {
+    General = {
+      InputMethod = "qtvirtualkeyboard";
+    };
+  };
+
+  environment.variables = {
+    QT_IM_MODULE = "qtvirtualkeyboard";
+  };
+  services.libinput.enable = true;
 }
