@@ -50,4 +50,10 @@
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
   hardware.sensor.iio.enable = true;
 
+  dconf.settings = { 
+    "org/gnome/mutter" = {
+      experimental-features = [ "scale-monitor-framebuffer" ];
+    };
+  };
+
 }
