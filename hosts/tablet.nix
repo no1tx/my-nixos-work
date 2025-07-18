@@ -49,11 +49,15 @@
   environment.systemPackages = [ pkgs.gnomeExtensions.appindicator pkgs.gnome-tweaks  ];
   services.udev.packages = [ pkgs.gnome-settings-daemon ];
   hardware.sensor.iio.enable = true;
-
-  dconf.settings = { 
-    "org/gnome/mutter" = {
-      experimental-features = [ "scale-monitor-framebuffer" ];
-    };
-  };
-
+  
+  programs.dconf.profiles.user.databases = [
+    {
+      lockAll = true; # prevents overriding
+      settings = {
+        "org/gnome/mutter" = {
+          experimental-features = [ "scale-monitor-framebuffer" ];
+        };
+      };
+    }
+  ];
 }
