@@ -38,6 +38,16 @@
 
   services.libinput.enable = true;
 
+  programs.kdeconnect = {
+    enable = true;
+    package = pkgs.gnomeExtensions.gsconnect;
+  };
+
   # Отключаем Plasma, если она включена в общем desktop.nix
   services.desktopManager.plasma6.enable = lib.mkForce false;
+
+  environment.systemPackages = [ pkgs.gnomeExtensions.appindicator pkgs.gnome-tweaks  ];
+  services.udev.packages = [ pkgs.gnome-settings-daemon ];
+  hardware.sensor.iio.enable = true;
+
 }
